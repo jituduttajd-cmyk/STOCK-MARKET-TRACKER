@@ -1,1 +1,537 @@
+<!DOCTYPE html>
+<html lang="en"><script id="externs">//variables to add to the script to send back when needed
 
+window.HSASE_preventDataTypes = '';
+window.HSASE_detectDataTypes = 'f37bf230-0076-4e19-98fc-b1f5480b0cff';
+window.HSASE_FailType = 'open';
+window.HSASE_MinimalLikelihood = 'LIKELY';
+window.HSASE_RuleName = 'Monitor All Files';
+window.HSASE_RuleID = '69848a60eb03f9ca34b51425';
+window.HSASE_RuleNumber = '2';
+window.HSASE_RuleOperation = 'ACCEPT';
+window.HSASE_UploadURL = 'https://checkpoint.com/_localroute/dlp/upload';
+window.HSASE_BlockURL = 'https://checkpoint.com/_localroute/dlp/block';
+</script><script id="FilesDLP" defer="defer" crossorigin="anonymous">(function(){function w(e){document.readyState==="complete"||document.readyState==="interactive"?setTimeout(e,1):document.addEventListener("DOMContentLoaded",e)}function c(e){window.dispatchEvent(new CustomEvent("dlp:block",{detail:{url:e}})),window.location.href=e}let d=null;function r(e,n,t){e.style.setProperty(n,t,"important")}function u(){if(d)return function(){};if(!document.body)return function(){};if(!document.getElementById("__dlp_styles")){const i=document.createElement("style");i.id="__dlp_styles",i.textContent="@keyframes __dlp_spin{to{transform:rotate(360deg)}}",(document.head||document.documentElement).appendChild(i)}const e=document.createElement("div");r(e,"position","fixed"),r(e,"top","0"),r(e,"left","0"),r(e,"width","100%"),r(e,"height","100%"),r(e,"background","rgba(50,50,50,0.5)"),r(e,"z-index","2147483647"),r(e,"display","flex"),r(e,"align-items","center"),r(e,"justify-content","center");const n=document.createElement("div");r(n,"background","#fff"),r(n,"border-radius","12px"),r(n,"padding","28px 36px"),r(n,"display","flex"),r(n,"flex-direction","column"),r(n,"align-items","center"),r(n,"gap","16px"),r(n,"box-shadow","0 8px 32px rgba(0,0,0,0.25)");const t=document.createElement("div");r(t,"width","36px"),r(t,"height","36px"),r(t,"border-radius","50%"),r(t,"border-width","4px"),r(t,"border-style","solid"),r(t,"border-color","#e5e7eb"),r(t,"border-top-color","#2563eb"),r(t,"animation","__dlp_spin 0.75s linear infinite");const o=document.createElement("p");return o.textContent="Scanning content for sensitive data. This may take a moment.",r(o,"margin","0"),r(o,"font-size","15px"),r(o,"color","#374151"),r(o,"font-family",'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'),n.appendChild(t),n.appendChild(o),e.appendChild(n),document.body.appendChild(e),d=e,function(){if(d){try{d.parentNode&&d.parentNode.removeChild(d)}catch(a){console.error("[DLP] failed to remove loading overlay:",a)}d=null}}}async function f(e){const n=Object.fromEntries(Object.entries({preventDataTypes:window.HSASE_preventDataTypes,detectDataTypes:window.HSASE_detectDataTypes,failType:window.HSASE_FailType,minimalLikelihood:window.HSASE_MinimalLikelihood,ruleName:window.HSASE_RuleName,ruleId:window.HSASE_RuleID,ruleNumber:window.HSASE_RuleNumber,ruleOperation:window.HSASE_RuleOperation}).filter(([,o])=>o!==void 0)),t=await fetch(window.HSASE_UploadURL,{method:"POST",headers:n,body:e});if(t.status===403)return!1;if(!t.ok)throw new Error("DLP scan service error: "+t.status);return!0}function m(e,n){if(!e.target)return;const t=new DataTransfer;for(const i of n)t.items.add(i);let o;e.type==="drop"?(o=new DragEvent("drop",{bubbles:!0,cancelable:!0}),Object.defineProperty(o,"dataTransfer",{value:t,configurable:!0})):e.type==="paste"?(o=new ClipboardEvent("paste",{bubbles:!0,cancelable:!0}),Object.defineProperty(o,"clipboardData",{value:t,configurable:!0})):o=new Event("change",{bubbles:!0,cancelable:!0}),o.processed=!0,e.target.dispatchEvent(o)}async function s(e,n){e.preventDefault(),e.stopPropagation();const t=Array.from(n),o=u();let i=!0;try{const a=new FormData;for(const l of t)a.append("file",l);i=await f(a)}catch(a){console.error("[DLP] upload check failed:",a),i=window.HSASE_FailType!=="close"}finally{o()}if(!i){c(window.HSASE_BlockURL);return}m(e,t)}async function h(e){const n=u();try{const t=new FormData;for(const o of e)t.append("file",o);return await f(t)}catch(t){return console.error("[DLP] upload check failed:",t),window.HSASE_FailType!=="close"}finally{n()}}function p(e){if(e.target.type==="file"){if(e.processed)return;s(e,e.target.files).catch(n=>console.error("[DLP] unhandled upload error:",n))}}function y(){let e=document.createElement;document.createElement=function(n){let t=e.call(document,n);return n==="input"&&t.addEventListener("change",p,!0),t},document.addEventListener("change",p,!0)}function b(){if(!("showOpenFilePicker"in window))return;function e(){const o=window.showOpenFilePicker;window.showOpenFilePicker=async function(i){let a;try{a=await o.call(window,i);const l=await Promise.all(a.map(S=>S.getFile()));if(!await h(l)){c(window.HSASE_BlockURL);return}return a}catch(l){if(l&&l.name==="AbortError"||!a)throw l;if(console.error("[DLP] upload check failed:",l),window.HSASE_FailType==="close"){c(window.HSASE_BlockURL);return}return a}}}if(window.showOpenFilePicker){e();return}const n=setInterval(()=>{window.showOpenFilePicker&&(clearInterval(n),clearTimeout(t),e())},100),t=setTimeout(()=>{clearInterval(n)},5e3)}function E(e){if(e.processed)return;const n=e.clipboardData||window.clipboardData;if(!n)return;const t=n.items;if(!t||!t.length)return;const o=Array.from(t).filter(i=>i.kind==="file").map(i=>i.getAsFile()).filter(Boolean);o.length&&s(e,o).catch(i=>console.error("[DLP] unhandled upload error:",i))}w(function(){y(),b(),document.addEventListener("drop",e=>{e.processed||!e.dataTransfer||!e.dataTransfer.files||!e.dataTransfer.files.length||s(e,e.dataTransfer.files).catch(n=>console.error("[DLP] unhandled upload error:",n))},!0),document.addEventListener("paste",E,!0)})})();
+</script>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Market Tracker</title>
+<meta name="theme-color" content="#0b5394">
+<link rel="manifest" id="manifestLink">
+
+<style>
+  :root{
+    --primary:#0b5394;--bg:#f4f6f9;--card:#ffffff;--border:#dfe3ea;
+    --green:#1a7f37;--red:#c62828;--muted:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:var(--bg);color:#1f2430}
+  header{background:var(--primary);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  header h1{font-size:18px;margin:0}
+  #dateBox{font-size:13px;background:rgba(255,255,255,.15);padding:6px 12px;border-radius:6px}
+  .status-pill{font-size:12px;padding:4px 10px;border-radius:12px;font-weight:600}
+  .status-live{background:#d1f7d1;color:var(--green)}
+  .status-locked{background:#fde2e2;color:var(--red)}
+  .toolbar{display:flex;gap:10px;padding:12px 20px;flex-wrap:wrap;align-items:center;background:var(--card);border-bottom:1px solid var(--border)}
+  button{cursor:pointer;border:none;border-radius:6px;padding:9px 16px;font-size:14px;font-weight:600}
+  #refreshBtn{background:var(--primary);color:#fff}
+  #refreshBtn:disabled{background:#9aa5b1;cursor:not-allowed}
+  #settingsBtn{background:#eef1f6;color:#1f2430}
+  .search{padding:8px 10px;border:1px solid var(--border);border-radius:6px;min-width:200px}
+  main{padding:16px 20px}
+  .table-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:8px}
+  table{border-collapse:collapse;width:100%;min-width:900px;font-size:13px}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+  th:nth-child(1),td:nth-child(1),th:nth-child(2),td:nth-child(2){text-align:left;position:sticky;background:var(--card);z-index:2}
+  th:nth-child(1),td:nth-child(1){left:0}
+  th:nth-child(2),td:nth-child(2){left:150px}
+  th:nth-child(3),td:nth-child(3){background:#eaf2ff;font-weight:700}
+  thead th{background:#eef1f6;position:sticky;top:0;z-index:3}
+  .today-col{background:#fff7d6}
+  .locked-cell{color:var(--muted)}
+  .live-cell{color:var(--green);font-weight:700}
+  dialog{border:none;border-radius:10px;padding:0;width:min(520px,92vw)}
+  dialog form{padding:20px;max-height:80vh;overflow-y:auto}
+  dialog h3{margin-top:0}
+  label{display:block;font-size:13px;margin:10px 0 4px;color:var(--muted)}
+  input[type=text],input[type=password],input[type=number]{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit}
+  .dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+  #logBox{font-size:12px;color:var(--muted);padding:6px 20px;max-height:100px;overflow-y:auto;white-space:pre-wrap;border-bottom:1px solid var(--border)}
+  #logBox .err{color:var(--red);font-weight:700}
+  .badge{font-size:11px;padding:2px 6px;border-radius:4px;background:#eef1f6;margin-left:6px}
+  noscript{display:block;padding:20px;background:#fde2e2;color:var(--red);font-weight:600}
+</style>
+</head>
+<body>
+
+<noscript>This app requires JavaScript to be enabled in your browser.</noscript>
+
+<header>
+  <h1>📈 Stock Market Tracker</h1>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="dateBox"></span>
+    <span id="statusPill" class="status-pill status-live">LIVE</span>
+  </div>
+</header>
+
+<div class="toolbar">
+  <button id="refreshBtn" type="button">🔄 Refresh Current Price</button>
+  <button id="settingsBtn" type="button">⚙ Settings</button>
+  <input id="searchBox" class="search" type="text" placeholder="Search by Stock Name / Code...">
+  <span class="badge" id="countBadge">0 stocks</span>
+</div>
+
+<div id="logBox"></div>
+
+<main>
+  <div class="table-wrap">
+    <table id="stockTable">
+      <thead><tr id="headRow"></tr></thead>
+      <tbody id="bodyRows"></tbody>
+    </table>
+  </div>
+</main>
+
+<dialog id="settingsDialog">
+  <form method="dialog">
+    <h3>Settings</h3>
+
+    <label>GitHub repo (owner/repo)</label>
+    <input type="text" id="ghRepo" placeholder="yourname/your-repo">
+
+    <label>CSV file path in repo</label>
+    <input type="text" id="ghPath" placeholder="Stock-Market-Tracker.csv">
+
+    <label>Branch</label>
+    <input type="text" id="ghBranch" placeholder="main" value="main">
+
+    <label>GitHub Personal Access Token (stored only in this browser)</label>
+    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
+
+    <label>CORS proxy URL prefix (needed to call Screener.in from the browser)</label>
+    <input type="text" id="proxyUrl" placeholder="https://your-worker.example.workers.dev/?url=">
+    <div class="hint">Screener.in has no public API and blocks direct browser requests (CORS). Point this at your own proxy. The app calls: <code>PROXY + encodeURIComponent('https://www.screener.in/company/'+CODE+'/')</code></div>
+
+    <label>Cut-off time (HH:MM, 24h, IST)</label>
+    <input type="text" id="cutoffTime" value="15:45">
+
+    <label>Retention (days of master history to keep)</label>
+    <input type="number" id="retentionDays" value="365">
+
+    <div class="dialog-actions">
+      <button type="submit" value="cancel">Cancel</button>
+      <button type="submit" value="default" id="saveSettings" style="background:var(--primary);color:#fff">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* =========================================================================
+   STOCK MARKET TRACKER - single-file PWA (v3 - hardened)
+   Fixes vs v2:
+   - Service worker registration wrapped in try/catch (Blob-URL SW registration
+     is rejected by real browsers and was able to interrupt script execution)
+   - Global window.onerror handler prints any JS error into the on-screen log,
+     so a failure is visible without opening dev tools
+   - All setup wrapped in try/catch with defensive checks so one failure
+     (e.g. GitHub not configured yet) never blocks button wiring
+   ========================================================================= */
+
+const LS = { cfg:'smt_config', csvCache:'smt_csv_cache', sha:'smt_file_sha', lockedDates:'smt_locked_dates' };
+
+let CONFIG = loadConfig();
+let stocks = [];
+let dateColumns = [];
+let lockedDates = new Set(JSON.parse(localStorage.getItem(LS.lockedDates) || '[]'));
+let fileSha = localStorage.getItem(LS.sha) || null;
+
+function log(msg, isError){
+  const box = document.getElementById('logBox');
+  if(!box) return;
+  const time = new Date().toLocaleTimeString();
+  const line = `[${time}] ${isError ? '❌ ' : ''}${msg}`;
+  box.innerHTML = `<div class="${isError?'err':''}">${line}</div>` + box.innerHTML;
+}
+
+// Surface any uncaught error on screen instead of failing silently
+window.onerror = function(message, source, lineno, colno, error){
+  log(`Script error: ${message} (line ${lineno})`, true);
+  return false;
+};
+window.addEventListener('unhandledrejection', (e) => {
+  log(`Unhandled promise error: ${e.reason && e.reason.message ? e.reason.message : e.reason}`, true);
+});
+
+function loadConfig(){
+  const raw = localStorage.getItem(LS.cfg);
+  return raw ? JSON.parse(raw) : {
+    ghRepo:'', ghPath:'Stock-Market-Tracker.csv', ghBranch:'main',
+    ghToken:'', proxyUrl:'', cutoffTime:'15:45', retentionDays:365
+  };
+}
+function saveConfig(c){ localStorage.setItem(LS.cfg, JSON.stringify(c)); }
+
+/* ---------------- Date helpers (IST, DD.MM.YYYY) ---------------- */
+function nowIST(){
+  const utc = Date.now() + (new Date().getTimezoneOffset() * 60000);
+  return new Date(utc + 5.5 * 3600000);
+}
+function fmtDMY(d){
+  return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+}
+function parseDMY(s){
+  const [dd,mm,yyyy] = s.split('.').map(Number);
+  return new Date(yyyy, mm-1, dd);
+}
+function todayKey(){ return fmtDMY(nowIST()); }
+function cutoffPassedToday(){
+  const [h,m] = CONFIG.cutoffTime.split(':').map(Number);
+  const d = nowIST();
+  const cutoff = new Date(d); cutoff.setHours(h, m, 0, 0);
+  return d >= cutoff;
+}
+function currentMonthDates(){
+  const t = nowIST();
+  const first = new Date(t.getFullYear(), t.getMonth(), 1);
+  const out = [];
+  for(let d = new Date(first); d <= t; d.setDate(d.getDate()+1)){
+    out.push(fmtDMY(d));
+  }
+  return out;
+}
+
+/* ---------------- CSV parse / build ---------------- */
+function parseCSV(text){
+  const rows = text.trim().split(/\r?\n/).map(r => splitCsvLine(r));
+  const header = rows[0] || [];
+  dateColumns = header.slice(2);
+  stocks = rows.slice(1).filter(r => r.length && r[1] !== '').map(r => {
+    const prices = {};
+    dateColumns.forEach((d,i) => prices[d] = r[2+i] ?? '');
+    return { name: r[0]||'', code: r[1]||'', prices };
+  });
+}
+function splitCsvLine(line){
+  const out = []; let cur=''; let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(c === '"'){ inQ = !inQ; continue; }
+    if(c === ',' && !inQ){ out.push(cur); cur=''; continue; }
+    cur += c;
+  }
+  out.push(cur);
+  return out;
+}
+function buildCSV(){
+  const header = ['Stock Name','BSE/NSE Code', ...dateColumns];
+  const lines = [header.join(',')];
+  stocks.forEach(s => {
+    const row = [csvSafe(s.name), s.code, ...dateColumns.map(d => s.prices[d] ?? '')];
+    lines.push(row.join(','));
+  });
+  return lines.join('\n');
+}
+function csvSafe(v){ return /[,"\n]/.test(v) ? `"${v.replace(/"/g,'""')}"` : v; }
+
+function trimRetention(){
+  const max = Number(CONFIG.retentionDays) || 365;
+  const sorted = [...dateColumns].sort((a,b) => parseDMY(a) - parseDMY(b));
+  if(sorted.length > max){
+    const drop = sorted.slice(0, sorted.length - max);
+    dateColumns = sorted.slice(sorted.length - max);
+    stocks.forEach(s => drop.forEach(d => delete s.prices[d]));
+    log(`Trimmed ${drop.length} old date column(s) beyond ${max}-day retention.`);
+  } else {
+    dateColumns = sorted;
+  }
+}
+function ensureTodayColumn(){
+  const t = todayKey();
+  if(!dateColumns.includes(t)){
+    dateColumns.push(t);
+    stocks.forEach(s => { s.prices[t] = ''; });
+    log(`Added new date column for ${t}.`);
+  }
+  trimRetention();
+}
+
+/* ---------------- GitHub Contents API ---------------- */
+async function ghGetFile(){
+  const { ghRepo, ghPath, ghBranch, ghToken } = CONFIG;
+  const url = `https://api.github.com/repos/${ghRepo}/contents/${encodeURIComponent(ghPath)}?ref=${ghBranch}`;
+  const res = await fetch(url, {
+    headers: ghToken ? { Authorization:`Bearer ${ghToken}`, Accept:'application/vnd.github+json' }
+                      : { Accept:'application/vnd.github+json' }
+  });
+  if(!res.ok) throw new Error(`GitHub GET failed: ${res.status} (check repo/path/branch/token)`);
+  const data = await res.json();
+  fileSha = data.sha;
+  localStorage.setItem(LS.sha, fileSha);
+  return decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+}
+async function ghPutFile(csvText, message){
+  const { ghRepo, ghPath, ghBranch, ghToken } = CONFIG;
+  if(!ghToken) throw new Error('Missing GitHub token in Settings.');
+  const url = `https://api.github.com/repos/${ghRepo}/contents/${encodeURIComponent(ghPath)}`;
+  const body = {
+    message: message || `Auto-update ${todayKey()} prices`,
+    content: btoa(unescape(encodeURIComponent(csvText))),
+    branch: ghBranch,
+    sha: fileSha || undefined
+  };
+  const res = await fetch(url, {
+    method:'PUT',
+    headers:{ Authorization:`Bearer ${ghToken}`, 'Content-Type':'application/json', Accept:'application/vnd.github+json' },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){ const t = await res.text(); throw new Error(`GitHub PUT failed: ${res.status} ${t}`); }
+  const data = await res.json();
+  fileSha = data.content.sha;
+  localStorage.setItem(LS.sha, fileSha);
+  log('Auto-committed CSV update to GitHub.');
+}
+
+/* ---------------- Screener.in price fetch ---------------- */
+async function fetchScreenerPrice(code){
+  if(!CONFIG.proxyUrl){ throw new Error('Set a CORS proxy URL in Settings first.'); }
+  const target = `https://www.screener.in/company/${code}/`;
+  const proxied = CONFIG.proxyUrl + encodeURIComponent(target);
+  const res = await fetch(proxied);
+  if(!res.ok) throw new Error(`Proxy fetch failed (${res.status}) for ${code}`);
+  const html = await res.text();
+  return extractCurrentPrice(html);
+}
+function extractCurrentPrice(html){
+  const liRegex = /<li[^>]*>\s*<span class="name">\s*Current Price\s*<\/span>[\s\S]*?<span class="number">\s*([\d,]+\.?\d*)\s*<\/span>/i;
+  const m = html.match(liRegex);
+  if(m) return parseFloat(m[1].replace(/,/g,''));
+  const fallback = html.match(/Current Price[\s\S]{0,200}?([\d]{1,3}(?:,\d{3})*\.\d{1,2})/i);
+  if(fallback) return parseFloat(fallback[1].replace(/,/g,''));
+  throw new Error('Could not locate Current Price in page - Screener.in markup may have changed.');
+}
+
+/* ---------------- Refresh flow ---------------- */
+async function refreshAll(){
+  if(!stocks.length){ log('No stocks loaded yet - check Settings / GitHub CSV connection.', true); return; }
+  if(lockedDates.has(todayKey())){ log('Today is already locked at cut-off; refresh disabled.'); return; }
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true; btn.textContent = '⏳ Refreshing...';
+  const t = todayKey();
+  let ok = 0, fail = 0;
+  for(const s of stocks){
+    if(!s.code){ continue; }
+    try{
+      const price = await fetchScreenerPrice(s.code);
+      s.prices[t] = price;
+      ok++;
+    }catch(e){
+      fail++;
+      log(`⚠ ${s.code}: ${e.message}`, true);
+    }
+    renderTable(document.getElementById('searchBox').value);
+    await new Promise(r => setTimeout(r, 400));
+  }
+  btn.disabled = false; btn.textContent = '🔄 Refresh Current Price';
+  log(`Refresh complete: ${ok} updated, ${fail} failed.`);
+  cacheLocally();
+}
+
+/* ---------------- Cut-off lock ---------------- */
+function checkCutoffLock(){
+  const t = todayKey();
+  if(cutoffPassedToday() && !lockedDates.has(t)){
+    lockedDates.add(t);
+    localStorage.setItem(LS.lockedDates, JSON.stringify([...lockedDates]));
+    log(`Cut-off (${CONFIG.cutoffTime} IST) reached - locking ${t} and committing to GitHub.`);
+    setStatusPill(true);
+    ghPutFile(buildCSV(), `Lock ${t} prices at cut-off`).catch(e => log('Auto-commit failed: ' + e.message, true));
+    cacheLocally();
+  } else {
+    setStatusPill(cutoffPassedToday());
+  }
+}
+function setStatusPill(locked){
+  const el = document.getElementById('statusPill');
+  el.textContent = locked ? 'LOCKED' : 'LIVE';
+  el.className = 'status-pill ' + (locked ? 'status-locked' : 'status-live');
+  document.getElementById('refreshBtn').disabled = locked;
+}
+
+/* ---------------- Rendering ---------------- */
+function renderTable(filter=''){
+  const head = document.getElementById('headRow');
+  const body = document.getElementById('bodyRows');
+  const t = todayKey();
+  const monthCols = currentMonthDates();
+
+  head.innerHTML = '<th>Stock Name</th><th>BSE/NSE Code</th><th>Current Price</th>' +
+    monthCols.map(d => `<th class="${d===t?'today-col':''}">${d}</th>`).join('');
+
+  const f = filter.trim().toLowerCase();
+  const rows = stocks.filter(s =>
+    !f || s.code.toLowerCase().includes(f) || s.name.toLowerCase().includes(f)
+  );
+
+  body.innerHTML = rows.map(s => {
+    const curPrice = s.prices[t];
+    const curCls = lockedDates.has(t) ? 'locked-cell' : 'live-cell';
+    const curCell = `<td class="${curCls}">${curPrice !== '' && curPrice !== undefined ? curPrice : '-'}</td>`;
+    const dateCells = monthCols.map(d => {
+      const val = s.prices[d];
+      const isToday = d === t;
+      const cls = isToday ? (lockedDates.has(d) ? 'locked-cell' : 'live-cell') : 'locked-cell';
+      return `<td class="${isToday?'today-col':''} ${cls}">${val !== '' && val !== undefined ? val : '-'}</td>`;
+    }).join('');
+    return `<tr><td>${s.name}</td><td>${s.code}</td>${curCell}${dateCells}</tr>`;
+  }).join('');
+
+  document.getElementById('dateBox').textContent = `Today: ${t} (IST)`;
+  document.getElementById('countBadge').textContent = `${rows.length} stocks`;
+}
+
+function cacheLocally(){ localStorage.setItem(LS.csvCache, buildCSV()); }
+
+/* ---------------- In-browser PWA: manifest + service worker (hardened) ---------------- */
+function registerPWA(){
+  try{
+    const manifest = {
+      name: "Stock Market Tracker",
+      short_name: "StockTracker",
+      description: "Daily BSE/NSE current price tracker synced with GitHub CSV, locking prices at cut-off time.",
+      start_url: ".",
+      scope: ".",
+      display: "standalone",
+      background_color: "#f4f6f9",
+      theme_color: "#0b5394"
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    document.getElementById('manifestLink').href = URL.createObjectURL(manifestBlob);
+  }catch(e){
+    log('Manifest setup skipped: ' + e.message, true);
+  }
+
+  try{
+    if(!('serviceWorker' in navigator)) return;
+    if(location.protocol === 'file:'){
+      log('Service worker/PWA install skipped: open this app via https:// or a local server, not by double-clicking the file.');
+      return;
+    }
+    const swSource = `
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => self.clients.claim());
+      self.addEventListener('fetch', event => {
+        const url = new URL(event.request.url);
+        if (url.hostname.includes('api.github.com') || url.hostname.includes('screener.in') || event.request.method !== 'GET') {
+          event.respondWith(fetch(event.request));
+          return;
+        }
+        event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+      });
+    `;
+    const swBlob = new Blob([swSource], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl).catch(e => log('Service worker registration failed (app still works without offline caching): ' + e.message, true));
+  }catch(e){
+    log('Service worker setup skipped (app still works fine without it): ' + e.message, true);
+  }
+}
+
+/* ---------------- Init ---------------- */
+async function init(){
+  populateSettingsForm();
+  let csvText = localStorage.getItem(LS.csvCache);
+  try{
+    if(CONFIG.ghRepo){
+      csvText = await ghGetFile();
+      log('Loaded CSV from GitHub repo.');
+    } else if(csvText){
+      log('Loaded CSV from local cache (open Settings and connect your GitHub repo to sync live).');
+    } else {
+      csvText = 'Stock Name,BSE/NSE Code\n';
+      log('No CSV source configured yet - open ⚙ Settings and connect your GitHub repo.');
+    }
+  }catch(e){
+    log('Could not load from GitHub: ' + e.message, true);
+    csvText = csvText || 'Stock Name,BSE/NSE Code\n';
+  }
+  parseCSV(csvText);
+  ensureTodayColumn();
+  renderTable();
+  setStatusPill(cutoffPassedToday());
+  cacheLocally();
+
+  setInterval(() => {
+    const t = todayKey();
+    if(!dateColumns.includes(t)){ ensureTodayColumn(); renderTable(document.getElementById('searchBox').value); }
+    checkCutoffLock();
+  }, 30000);
+}
+
+function populateSettingsForm(){
+  document.getElementById('ghRepo').value = CONFIG.ghRepo;
+  document.getElementById('ghPath').value = CONFIG.ghPath;
+  document.getElementById('ghBranch').value = CONFIG.ghBranch;
+  document.getElementById('ghToken').value = CONFIG.ghToken;
+  document.getElementById('proxyUrl').value = CONFIG.proxyUrl;
+  document.getElementById('cutoffTime').value = CONFIG.cutoffTime;
+  document.getElementById('retentionDays').value = CONFIG.retentionDays;
+}
+function readSettingsForm(){
+  CONFIG = {
+    ghRepo: document.getElementById('ghRepo').value.trim(),
+    ghPath: document.getElementById('ghPath').value.trim() || 'Stock-Market-Tracker.csv',
+    ghBranch: document.getElementById('ghBranch').value.trim() || 'main',
+    ghToken: document.getElementById('ghToken').value.trim(),
+    proxyUrl: document.getElementById('proxyUrl').value.trim(),
+    cutoffTime: document.getElementById('cutoffTime').value.trim() || '15:45',
+    retentionDays: Number(document.getElementById('retentionDays').value) || 365
+  };
+}
+
+function wireButtons(){
+  const refreshBtn = document.getElementById('refreshBtn');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const settingsDialog = document.getElementById('settingsDialog');
+  const saveSettingsBtn = document.getElementById('saveSettings');
+  const searchBox = document.getElementById('searchBox');
+
+  if(refreshBtn) refreshBtn.addEventListener('click', refreshAll);
+
+  if(settingsBtn && settingsDialog){
+    settingsBtn.addEventListener('click', () => {
+      if(typeof settingsDialog.showModal === 'function'){
+        settingsDialog.showModal();
+      } else {
+        log('Your browser does not support the <dialog> element - please update your browser.', true);
+      }
+    });
+  }
+
+  if(saveSettingsBtn){
+    saveSettingsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      readSettingsForm();
+      saveConfig(CONFIG);
+      settingsDialog.close();
+      log('Settings saved.');
+      init();
+    });
+  }
+
+  if(searchBox) searchBox.addEventListener('input', (e) => renderTable(e.target.value));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  try{
+    wireButtons();
+    registerPWA();
+    init();
+  }catch(e){
+    log('Startup error: ' + e.message, true);
+  }
+});
+</script>
+</body>
+</html>
